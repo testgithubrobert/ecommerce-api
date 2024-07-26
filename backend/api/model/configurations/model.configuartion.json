@@ -1,0 +1,26 @@
+[
+    {
+        "database": "ecomarket_users_db",
+        "password": "0709449425robert",
+        "host": "127.0.0.1",
+        "user": "root"
+    },
+    {
+        "database": "ecomarket_products_db",
+        "password": "0709449425robert",
+        "host": "127.0.0.1",
+        "user": "root"
+    },
+    {
+        "database": "ecomarket_payments_db",
+        "password": "0709449425robert",
+        "host": "127.0.0.1",
+        "user": "root"
+    },
+    {
+        "database": "ecomarket_accounts_db",
+        "password": "0709449425robert",
+        "host": "127.0.0.1",
+        "user": "root"
+    }
+]

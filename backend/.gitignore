@@ -1,0 +1,18 @@
+# ignore all node_modules
+node_modules
+# ignore all txt files
+*.txt
+# ignore all eslint files
+*.eslintrc
+# ignore all environment variebles
+.env
+# ignore all vscode files and dirs
+.vscode
+# ignore tsconfig.json files
+*tsconfig.json
+# ignore all config dirs
+*config/
+# ignore all configuration.json
+*configuration.json
+# ignore all rest client extension files if exists
+*.rest
