@@ -1,9 +1,11 @@
+"use strict";
 const express = require('express');
 const router = express.Router();
 const controller = require('../../../api/controller/errors/404.error.controller');
 var { UsersDbPool_connection, ProductsDbPool_connection, PaymentsDbPool_connection, AccountsDbPool_connection } = require('../../model/connection/model.connection');
 const registerAccount = require('../modules/module.register');
 const bcrypt = require('bcrypt');
+const authentication = require('../../controller/jwt/verify.jwt')
 
 router.route('/')
     .get((request, response) => {
@@ -15,7 +17,7 @@ router.route('/')
     .post(async (request, response) => {
         registerAccount(request, response);
     })
-    .delete(async (request, response) => {
+    .delete(authentication, async (request, response) => {
         response.statusCode = 200;
             response.contentType = 'application/json';
 

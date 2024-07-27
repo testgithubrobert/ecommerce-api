@@ -25,7 +25,7 @@ async function registerAccount(request, response) {
                 await AccountsDbPool_connection.query(`INSERT INTO accounts_history VALUES(${JSON.stringify(uuid())}, ${JSON.stringify(request.body.first_name)}, ${JSON.stringify(request.body.last_name)}, ${JSON.stringify(request.body.email)}, ${JSON.stringify(hashedPassword)} )`);
                 // register new api users
                 await UsersDbPool_connection.query(`INSERT INTO users VALUES(${JSON.stringify(uuid())}, ${JSON.stringify(request.body.first_name)}, ${JSON.stringify(request.body.last_name)}, ${JSON.stringify(request.body.email)} )`);
-                // register new api account history
+                // register new api users history
                 await UsersDbPool_connection.query(`INSERT INTO users_history VALUES(${JSON.stringify(uuid())}, ${JSON.stringify(request.body.first_name)}, ${JSON.stringify(request.body.last_name)}, ${JSON.stringify(request.body.email)} )`);
     
                 global.setTimeout(() => response.json({"message": `Account ${request.body.first_name} ${request.body.last_name} has been registered!, now log into account to get token`}), 1000);

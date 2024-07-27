@@ -1,18 +1,19 @@
+"use strict";
 const express = require('express');
 const router = express.Router();
 const controller = require('../errors/404.error.controller');
 var { UsersDbPool_connection, ProductsDbPool_connection, PaymentsDbPool_connection } = require('../../model/connection/model.connection');
  
 router.route('/').get((request, response) => {
-    response.statusCode = 201;
+    response.statusCode = 200;
         response.contentType = 'application/json';
-        if(request.accepts('application/json')) global.setTimeout(() => response.status(403).json({ "message": "Welcome to Eco Market", "message": "look for and shop any item of your choice like foods, accessories and cloths" }), 1000);
+        if(request.accepts('application/json')) global.setTimeout(() => response.status(200).json({ "message": "Welcome to Eco Market", "message": "look for and shop any item of your choice like foods, accessories and cloths" }), 1000);
 });
 
 router.route('/welcome').get((request, response) => {
-    response.statusCode = 201;
+    response.statusCode = 200;
         response.contentType = 'application/json';
-        if(request.accepts('application/json')) global.setTimeout(() => response.status(403).json({ "company": "Eco Market", "message": "Welcome to Eco Market, look for and shop any item of your choice like foods, accessories and cloths" }), 1000);
+        if(request.accepts('application/json')) global.setTimeout(() => response.status(200).json({ "company": "Eco Market", "message": "Welcome to Eco Market, look for and shop any item of your choice like foods, accessories and cloths" }), 1000);
 });
 
 // api routers
