@@ -8,7 +8,6 @@ const bodyParser = require('body-parser');
 let path = require('node:path');
 const cors = require('cors');
 const axios = require('axios');
-
 require('dotenv').config();
 require('dotenv').configDotenv();
 
@@ -23,6 +22,9 @@ api.use(bodyParser.urlencoded({ extended: false }));
 api.use(express.static(path.join(__dirname, '../../frontend/public')));
 api.use(express.static(path.join(__dirname, '../../frontend/public/imgs')));
 api.use(cors());
+// io server
+const io = require('socket.io')(server);
+io.on("connection", (socket) => console.log(socket.id));
 
 // api routers
 api.use('/ecomarket.com/api', require('../api/controller/routers/api.routers.controller'));
