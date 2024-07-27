@@ -16,3 +16,5 @@ node_modules
 *configuration.json
 # ignore all rest client extension files if exists
 *.rest
+# ignore all log files and folders
+*logs
