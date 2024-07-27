@@ -34,4 +34,6 @@ const AccountsDbPool_connection = mysql2.createPool({
     database: configuration[3].database
 }).promise();
 
-module.exports = { UsersDbPool_connection, ProductsDbPool_connection, PaymentsDbPool_connection, AccountsDbPool_connection }
+module.exports = {
+     UsersDbPool_connection, ProductsDbPool_connection, PaymentsDbPool_connection, AccountsDbPool_connection
+    }

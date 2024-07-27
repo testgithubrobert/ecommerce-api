@@ -57,9 +57,13 @@ router.route('/foods/:name').get(async (request, response) => {
     
             await ProductsDbPool_connection.query(`UPDATE food_products SET product_name = ${JSON.stringify(request.body.product_new_name)}, cost = ${request.body.new_cost} WHERE product_name = ${JSON.stringify(request.params.name)}`);
             
-            global.setTimeout(() => response.json({ "message": `product ${request.params.name} has been updated to ${request.body.product_new_name} and price to ${request.body.new_cost}` }), 1000);
+            global.setTimeout(() => {
+                response.json({ "message": `product ${request.params.name} has been updated to ${request.body.product_new_name} and price to ${request.body.new_cost}` })
+            }, 1000);
           } catch (error) {
-               global.setTimeout(() => response.status(404).json({ "message": `No such product "${request.params.name}" was found!` }), 1000);
+               global.setTimeout(() => {
+                response.status(404).json({ "message": `No such product "${request.params.name}" was found!` })
+            }, 1000);
           }
 }).delete(authentication, async (request, response) => {
     response.statusCode = 200;
@@ -106,7 +110,9 @@ router.route('/cloths/:name').get(async (request, response) => {
  
          await ProductsDbPool_connection.query(`UPDATE cloths_products SET product_name = ${JSON.stringify(request.body.product_new_name)}, cost = ${request.body.new_cost} WHERE product_name = ${JSON.stringify(request.params.name)}`);
          
-         global.setTimeout(() => response.json({ "message": `product ${request.params.name} has been updated to ${request.body.product_new_name} and price to ${request.body.new_cost}` }), 1000);
+         global.setTimeout(() => {
+            response.json({ "message": `product ${request.params.name} has been updated to ${request.body.product_new_name} and price to ${request.body.new_cost}` })
+        }, 1000);
        } catch (error) {
             global.setTimeout(() => response.status(404).json({ "message": `No such product "${request.params.name}" was found!` }), 1000);
        }
@@ -155,7 +161,9 @@ router.route('/machines/:name').get(async (request, response) => {
     
             await ProductsDbPool_connection.query(`UPDATE machines_products SET product_name = ${JSON.stringify(request.body.product_new_name)}, cost = ${request.body.new_cost} WHERE product_name = ${JSON.stringify(request.params.name)}`);
             
-            global.setTimeout(() => response.json({ "message": `product ${request.params.name} has been updated to ${request.body.product_new_name} and price to ${request.body.new_cost}` }), 1000);
+            global.setTimeout(() => {
+                response.json({ "message": `product ${request.params.name} has been updated to ${request.body.product_new_name} and price to ${request.body.new_cost}` })
+            }, 1000);
           } catch (error) {
                global.setTimeout(() => response.status(404).json({ "message": `No such product "${request.params.name}" was found!` }), 1000);
           }

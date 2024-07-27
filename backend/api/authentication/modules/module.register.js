@@ -16,23 +16,33 @@ async function registerAccount(request, response) {
 
         try {
             if(alreadyExistingAccount || request.body.password.length < 5 || !request.body.email.includes('@gmail.com')) {
-                response.status(400).json({ "message": "user account already exists or password length is not strong!" });
+                global.setTimeout(() => {
+                    response.status(400).json({ "message": "user account already exists or password length is not strong!" });
+                }, 1000)
                 return;
             } else {
                 // register new api account
-                await AccountsDbPool_connection.query(`INSERT INTO accounts VALUES(${JSON.stringify(uuid())}, ${JSON.stringify(request.body.first_name)}, ${JSON.stringify(request.body.last_name)}, ${JSON.stringify(request.body.email)}, ${JSON.stringify(hashedPassword)} )`);
+                await AccountsDbPool_connection.query(`INSERT INTO accounts VALUES(
+                    ${JSON.stringify(uuid())}, ${JSON.stringify(request.body.first_name)}, ${JSON.stringify(request.body.last_name)}, ${JSON.stringify(request.body.email)}, ${JSON.stringify(hashedPassword)})`);
                 // register new api account history
-                await AccountsDbPool_connection.query(`INSERT INTO accounts_history VALUES(${JSON.stringify(uuid())}, ${JSON.stringify(request.body.first_name)}, ${JSON.stringify(request.body.last_name)}, ${JSON.stringify(request.body.email)}, ${JSON.stringify(hashedPassword)} )`);
+                await AccountsDbPool_connection.query(`INSERT INTO accounts_history VALUES(
+                    ${JSON.stringify(uuid())}, ${JSON.stringify(request.body.first_name)}, ${JSON.stringify(request.body.last_name)}, ${JSON.stringify(request.body.email)}, ${JSON.stringify(hashedPassword)} )`);
                 // register new api users
-                await UsersDbPool_connection.query(`INSERT INTO users VALUES(${JSON.stringify(uuid())}, ${JSON.stringify(request.body.first_name)}, ${JSON.stringify(request.body.last_name)}, ${JSON.stringify(request.body.email)} )`);
+                await UsersDbPool_connection.query(`INSERT INTO users VALUES(
+                    ${JSON.stringify(uuid())}, ${JSON.stringify(request.body.first_name)}, ${JSON.stringify(request.body.last_name)}, ${JSON.stringify(request.body.email)} )`);
                 // register new api users history
-                await UsersDbPool_connection.query(`INSERT INTO users_history VALUES(${JSON.stringify(uuid())}, ${JSON.stringify(request.body.first_name)}, ${JSON.stringify(request.body.last_name)}, ${JSON.stringify(request.body.email)} )`);
+                await UsersDbPool_connection.query(`INSERT INTO users_history VALUES(
+                    ${JSON.stringify(uuid())}, ${JSON.stringify(request.body.first_name)}, ${JSON.stringify(request.body.last_name)}, ${JSON.stringify(request.body.email)} )`);
     
-                global.setTimeout(() => response.json({"message": `Account ${request.body.first_name} ${request.body.last_name} has been registered!, now log into account to get token`}), 1000);
+                global.setTimeout(() => {
+                    response.json({"message": `Account ${request.body.first_name} ${request.body.last_name} has been registered!, now log into account to get token`})
+                }, 1000);
             }
         } catch (error) {
-            console.log(error);
-            response.status(400).json({ "message": "user account already exists or password length is not strong!" });
+            // console.log(error);
+            global.setTimeout(() => {
+                response.status(400).json({ "message": "user account already exists or password length is not strong!" });
+            }, 1000)
         }
 }
 

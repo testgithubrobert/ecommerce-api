@@ -12,7 +12,9 @@ router.route('/')
         response.statusCode = 200;
         response.contentType = 'application/json';
 
-        if(request.accepts('application/json')) global.setTimeout(() => response.status(200).json({ "message": "Welcome to Eco Market register new account page!" }), 1000);
+        if(request.accepts('application/json')) global.setTimeout(() => {
+            response.status(200).json({ "message": "Welcome to Eco Market register new account page!" })
+        }, 1000);
     })
     .post(async (request, response) => {
         registerAccount(request, response);
@@ -25,9 +27,15 @@ router.route('/')
         const foundAccount = registeredAccounts[0].find((account) => { return account.email === request.body.email });
         var passwordMatch = bcrypt.compare(`${request.body.password}`, foundAccount.password);
 
-        passwordMatch === false ? (async function(){ response.status(403).json({ "message": "provided credentials do not match any account query!" }) }()) : (async function(){ 
-            await AccountsDbPool_connection.query(`DELETE FROM accounts WHERE email = ${foundAccount.email}`)
+        passwordMatch === false ? 
+            (async function(){ global.setTimeout(() => {
+                response.status(403).json({ "message": "provided credentials do not match any account query!" });
+            }) }()) 
+            : (async function(){ 
+                await AccountsDbPool_connection.query(`DELETE FROM accounts WHERE email = ${foundAccount.email}`)
+        global.setTimeout(() => {
             response.status(200).json({ "message": `account ${foundAccount.first_name} ${foundAccount.last_name} has been deleted!` });
+          })
         }());
     });
 
