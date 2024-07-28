@@ -29,7 +29,7 @@ io.on("connection", (socket) => console.log(socket.id));
 // api routers
 api.use('/ecomarket.com/api', require('../api/controller/routers/api.routers.controller'));
 
-// 404
+// 404 controller
 const controller = require('../api/controller/errors/404.error.controller');
 api.use(controller.NotFound);
 
