@@ -73,6 +73,8 @@ router.route('/foods/:name').get(async (request, response) => {
     response.statusCode = 200;
         response.contentType = 'application/json';
 
+        var products = await ProductsDbPool_connection.query('SELECT * FROM food_products');
+        const foundProduct = 
         await ProductsDbPool_connection.query(`DELETE FROM food_products WHERE product_name = ${JSON.stringify(request.params.name)}`);
         global.setTimeout(() => response.json({ "message": `product ${request.params.name} has been deleted` }), 1000);
 });
