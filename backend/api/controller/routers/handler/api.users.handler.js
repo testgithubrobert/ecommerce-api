@@ -8,7 +8,11 @@ router.route('/').get(async (request, response) => {
         response.contentType = 'application/json';
 
     const data = await UsersDbPool_connection.query("SELECT * FROM users");
-    if(request.accepts('application/json')) global.setTimeout(() => response.status(200).json(data[0]), 1000);
+    if(data[0].length < 1) {
+        global.setTimeout(() => response.status(200).json({ "message": "No registered users available at the moment!" }), 1000);
+    } else {
+        global.setTimeout(() => response.status(200).json(data[0]), 1000);
+    }
 });
 
 // 404

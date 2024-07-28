@@ -17,7 +17,9 @@ router.get('/', async (request, response) => {
         var productsGroupThree = await ProductsDbPool_connection.query('SELECT * FROM machines_products');
 
         const products = [ ...productsGroupOne[0], ...productsGroupTwo[0], ...productsGroupThree[0] ]
-        global.setTimeout(() => response.json(products), 1000);
+        products.length < 1 ? global.setTimeout(() => {
+            response.json({ "message": "No available products on market!" })}
+            , 1000) : global.setTimeout(() => response.json(products), 1000);
 });
 
 
@@ -28,7 +30,9 @@ router.route('/foods').get(async (request, response) => {
         response.contentType = 'application/json';
 
         var products = await ProductsDbPool_connection.query('SELECT * FROM food_products');
-        global.setTimeout(() => response.json(products[0]), 1000);
+        products[0].length < 1 ? global.setTimeout(() => {
+            response.json({ "message": "No available products on market!" })}
+            , 1000) : global.setTimeout(() => response.json(products[0]), 1000);
 }).post(authentication, async (request, response) => {
     response.statusCode = 201;
         response.contentType = 'application/json';
@@ -81,7 +85,9 @@ router.route('/cloths').get(async (request, response) => {
         response.contentType = 'application/json';
 
         var products = await ProductsDbPool_connection.query('SELECT * FROM cloths_products');
-        global.setTimeout(() => response.json(products[0]), 1000);
+        products[0].length < 1 ? global.setTimeout(() => {
+            response.json({ "message": "No available products on market!" })}
+            , 1000) : global.setTimeout(() => response.json(products[0]), 1000);
 }).post(authentication, async (request, response) => {
     response.statusCode = 201;
         response.contentType = 'application/json';
@@ -132,7 +138,9 @@ router.route('/machines').get(async (request, response) => {
         response.contentType = 'application/json';
 
         var products = await ProductsDbPool_connection.query('SELECT * FROM machines_products');
-        global.setTimeout(() => response.json(products[0]), 1000);
+        products[0].length < 1 ? global.setTimeout(() => {
+            response.json({ "message": "No available products on market!" })}
+            , 1000) : global.setTimeout(() => response.json(products[0]), 1000);
 }).post(authentication, async (request, response) => {
     response.statusCode = 201;
         response.contentType = 'application/json';
