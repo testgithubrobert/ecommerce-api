@@ -1,0 +1,29 @@
+{
+    "URL": "http://127.0.0.1:3000/ecomarket.com/api",
+    "technologies": [
+    "axios",
+    "bcrypt",
+    "body-parser",
+    "cookie-parser",
+    "cors",
+    "date-fns",
+    "dotenv",
+    "express",
+    "jsonwebtoken",
+    "mysql",
+    "mysql2",
+    "node",
+    "socket.io",
+    "socket.io-client",
+    "uuid"
+    ],
+    "message": [
+        "This is a simple ecommerce api manageble and scalable for development.This api can handle CRUD operation well that will help users handle and carry out shopping of different items posted on the market through CRUD operation. A user can access products on market by using the URL below: GET http://127.0.0.1:3000/ecomarket.com/api.",
+        "This api contains a highly tight account sign up and login system for users. Some routes are protected by jwt and to access these routes a user must signup to a get an account, log into that account to get a jwt token in order to access different routes and to also access different resources on the api"
+    ],
+    "repository": "https://github.com/testgithubrobert/ecommerce-api",
+    "developer": "robb",
+    "languages": "javascript",
+    "backend": true,
+    "frontend": false
+}

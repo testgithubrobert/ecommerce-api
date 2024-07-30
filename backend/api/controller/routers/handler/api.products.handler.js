@@ -16,15 +16,15 @@ router.get('/', async (request, response) => {
         var productsGroupTwo = await ProductsDbPool_connection.query('SELECT * FROM cloths_products');
         var productsGroupThree = await ProductsDbPool_connection.query('SELECT * FROM machines_products');
 
-        const products = [ ...productsGroupOne[0], ...productsGroupTwo[0], ...productsGroupThree[0] ]
+        const products = [ ...productsGroupOne[0], ...productsGroupTwo[0], ...productsGroupThree[0] ];
         products.length < 1 ? global.setTimeout(() => {
             response.json({ "message": "No available products on market!" })}
             , 1000) : global.setTimeout(() => response.json(products), 1000);
 });
 
 
-
-// route products group 1
+(async function(){
+    // route products group 1
 router.route('/foods').get(async (request, response) => {
     response.statusCode = 200;
         response.contentType = 'application/json';
@@ -36,8 +36,19 @@ router.route('/foods').get(async (request, response) => {
 }).post(authentication, async (request, response) => {
     response.statusCode = 201;
         response.contentType = 'application/json';
-        await ProductsDbPool_connection.query(`INSERT INTO food_products VALUES(${JSON.stringify(uuid())}, ${JSON.stringify(request.body.product_name)}, ${request.body.cost}, 'food', 'ok')`);
-        global.setTimeout(() => response.json({"message": "product added for sale!"}), 1000);
+
+        var products = await ProductsDbPool_connection.query('SELECT * FROM food_products');
+            const existingProduct = products[0].find((product) => { return product.product_name === request.body.product_name });
+
+            if(existingProduct) {
+                existingProduct.amount++;
+                await ProductsDbPool_connection.query(`UPDATE food_products SET amount = ${existingProduct.amount++} WHERE product_name = ${JSON.stringify(request.body.product_name)}`)
+                global.setTimeout(() => response.json({"message": "product added for sale!"}), 1000);
+                return;
+            } else {
+                await ProductsDbPool_connection.query(`INSERT INTO food_products VALUES(${JSON.stringify(uuid())}, ${JSON.stringify(request.body.product_name)}, ${request.body.cost}, 'foods & vegetables', 'ok', ${1})`);
+                global.setTimeout(() => response.json({"message": "product added for sale!"}), 1000);   
+            }
 });
 // get single item
 router.route('/foods/:name').get(async (request, response) => {
@@ -72,16 +83,24 @@ router.route('/foods/:name').get(async (request, response) => {
 }).delete(authentication, async (request, response) => {
     response.statusCode = 200;
         response.contentType = 'application/json';
-
+        
         var products = await ProductsDbPool_connection.query('SELECT * FROM food_products');
-        const foundProduct = 
-        await ProductsDbPool_connection.query(`DELETE FROM food_products WHERE product_name = ${JSON.stringify(request.params.name)}`);
-        global.setTimeout(() => response.json({ "message": `product ${request.params.name} has been deleted` }), 1000);
+        const foundProduct = products[0].find((product) => { return product.product_name === request.params.name });
+        
+        if(!foundProduct) {
+            global.setTimeout(() => {
+                response.status(404).json({ "message": `No such product "${request.params.name}" was found!` })
+            }, 1000);
+        } else {
+            await ProductsDbPool_connection.query(`DELETE FROM food_products WHERE product_name = ${JSON.stringify(request.params.name)}`);
+            global.setTimeout(() => response.json({ "message": `product ${request.params.name} has been deleted` }), 1000);
+        }
 });
+}());
 
 
-
-// route products group 2
+(async function(){
+    // route products group 2
 router.route('/cloths').get(async (request, response) => {
     response.statusCode = 200;
         response.contentType = 'application/json';
@@ -93,8 +112,19 @@ router.route('/cloths').get(async (request, response) => {
 }).post(authentication, async (request, response) => {
     response.statusCode = 201;
         response.contentType = 'application/json';
-        await ProductsDbPool_connection.query(`INSERT INTO cloths_products VALUES(${JSON.stringify(uuid())}, ${JSON.stringify(request.body.product_name)}, ${request.body.cost}, 'cloths', 'ok')`);
-        global.setTimeout(() => response.json({"message": "product added for sale!"}), 1000);
+
+        var products = await ProductsDbPool_connection.query('SELECT * FROM cloths_products');
+            const existingProduct = products[0].find((product) => { return product.product_name === request.body.product_name });
+
+            if(existingProduct) {
+                existingProduct.amount++;
+                await ProductsDbPool_connection.query(`UPDATE cloths_products SET amount = ${existingProduct.amount++} WHERE product_name = ${JSON.stringify(request.body.product_name)}`)
+                global.setTimeout(() => response.json({"message": "product added for sale!"}), 1000);
+                return;
+            } else {
+                await ProductsDbPool_connection.query(`INSERT INTO cloths_products VALUES(${JSON.stringify(uuid())}, ${JSON.stringify(request.body.product_name)}, ${request.body.cost}, 'clothes & shoes', 'ok', ${1})`);
+                global.setTimeout(() => response.json({"message": "product added for sale!"}), 1000);   
+            }
 })
 // get single item
 router.route('/cloths/:name').get(async (request, response) => {
@@ -128,13 +158,24 @@ router.route('/cloths/:name').get(async (request, response) => {
     response.statusCode = 200;
         response.contentType = 'application/json';
 
-        await ProductsDbPool_connection.query(`DELETE FROM cloths_products WHERE product_name = ${JSON.stringify(request.params.name)}`);
-        global.setTimeout(() => response.json({ "message": `product ${request.params.name} has been deleted` }), 1000);
+        var products = await ProductsDbPool_connection.query('SELECT * FROM cloths_products');
+        const foundProduct = products[0].find((product) => { return product.product_name === request.params.name });
+        
+        if(!foundProduct) {
+            global.setTimeout(() => {
+                response.status(404).json({ "message": `No such product "${request.params.name}" was found!` })
+            }, 1000);
+        } else {
+            await ProductsDbPool_connection.query(`DELETE FROM cloths_products WHERE product_name = ${JSON.stringify(request.params.name)}`);
+            global.setTimeout(() => response.json({ "message": `product ${request.params.name} has been deleted` }), 1000);
+        }
 });
+}());
 
 
 
-// route products group 3
+(async function(){
+    // route products group 3
 router.route('/machines').get(async (request, response) => {
     response.statusCode = 200;
         response.contentType = 'application/json';
@@ -146,8 +187,19 @@ router.route('/machines').get(async (request, response) => {
 }).post(authentication, async (request, response) => {
     response.statusCode = 201;
         response.contentType = 'application/json';
-        await ProductsDbPool_connection.query(`INSERT INTO machines_products VALUES(${JSON.stringify(uuid())}, ${JSON.stringify(request.body.product_name)}, ${request.body.cost}, 'machines', 'ok')`);
-        global.setTimeout(() => response.json({"message": "product added for sale!"}), 1000);
+
+        var products = await ProductsDbPool_connection.query('SELECT * FROM machines_products');
+            const existingProduct = products[0].find((product) => { return product.product_name === request.body.product_name });
+
+            if(existingProduct) {
+                existingProduct.amount++;
+                await ProductsDbPool_connection.query(`UPDATE machines_products SET amount = ${existingProduct.amount++} WHERE product_name = ${JSON.stringify(request.body.product_name)}`)
+                global.setTimeout(() => response.json({"message": "product added for sale!"}), 1000);
+                return;
+            } else {
+                await ProductsDbPool_connection.query(`INSERT INTO machines_products VALUES(${JSON.stringify(uuid())}, ${JSON.stringify(request.body.product_name)}, ${request.body.cost}, 'machines & accessories', 'ok', ${1})`);
+                global.setTimeout(() => response.json({"message": "product added for sale!"}), 1000);   
+            }
 })
 // get single item
 router.route('/machines/:name').get(async (request, response) => {
@@ -181,9 +233,19 @@ router.route('/machines/:name').get(async (request, response) => {
     response.statusCode = 200;
         response.contentType = 'application/json';
 
-        await ProductsDbPool_connection.query(`DELETE FROM machines_products WHERE product_name = ${JSON.stringify(request.params.name)}`);
-        global.setTimeout(() => response.json({ "message": `product ${request.params.name} has been deleted` }), 1000);
+        var products = await ProductsDbPool_connection.query('SELECT * FROM machines_products');
+        const foundProduct = products[0].find((product) => { return product.product_name === request.params.name });
+        
+        if(!foundProduct) {
+            global.setTimeout(() => {
+                response.status(404).json({ "message": `No such product "${request.params.name}" was found!` })
+            }, 1000);
+        } else {
+            await ProductsDbPool_connection.query(`DELETE FROM machines_products WHERE product_name = ${JSON.stringify(request.params.name)}`);
+            global.setTimeout(() => response.json({ "message": `product ${request.params.name} has been deleted` }), 1000);
+        }
 });
+}());
 
 // 404
 router.use(controller.NotFound);

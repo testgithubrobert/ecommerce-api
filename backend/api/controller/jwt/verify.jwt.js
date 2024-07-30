@@ -8,7 +8,7 @@ function authorization(request, response, next) {
             const authorizationHeaders = request.headers['authorization'];
             var token = authorizationHeaders.split('')[1];
             if (!token || typeof token === 'undefined') {
-                response.status(403).send("Token undefined!")
+                response.status(404).send("Token undefined!");
                 return;
             }
             else {
@@ -19,7 +19,7 @@ function authorization(request, response, next) {
             }
         }
         catch (error) {
-            response.sendStatus(403);
+            response.status(401).json({ "message": "user unauthorized, login to get authentication token!" });
             // console.log(error);
         }
     };

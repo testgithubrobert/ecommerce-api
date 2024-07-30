@@ -11,16 +11,31 @@ async function registerAccount(request, response) {
         const salt = await bcrypt.genSalt();
         const hashedPassword = await bcrypt.hash(`${request.body.password}`, salt);
 
-        let duplicates = await AccountsDbPool_connection.query("SELECT * FROM accounts");
-        const alreadyExistingAccount = duplicates[0].find((account) => { return account.first_name === request.body.first_name });
+        let registeredAccounts = await AccountsDbPool_connection.query("SELECT * FROM accounts");
+        const alreadyExistingAccount = registeredAccounts[0].find((account) => { return account.first_name === request.body.first_name });
+        const alreadyExistingEmailAccount = registeredAccounts[0].find((account) => { return account.email === request.body.email });
 
         try {
-            if(alreadyExistingAccount || request.body.password.length < 5 || !request.body.email.includes('@gmail.com')) {
+            if(alreadyExistingAccount) {
                 global.setTimeout(() => {
-                    response.status(400).json({ "message": "user account already exists or password length is not strong!" });
+                    response.status(400).json({ "message": "user account already exists!" });
                 }, 1000)
                 return;
+            } else if(request.body.password.length < 7 || !request.body.email.includes('@gmail.com') || request.body.first_name.length < 3
+                        || request.body.last_name.length < 3 ) {
+                global.setTimeout(() => {
+                    response.status(400).json({ "message": "user account already exists or password length is not strong!" });
+                }, 1000);
+                return;
+            } else if(alreadyExistingEmailAccount) {
+                global.setTimeout(() => {
+                    response.status(201).json({ 
+                        "message": `email account already in use by ${alreadyExistingEmailAccount.first_name} ${alreadyExistingEmailAccount.last_name}`
+                    });
+                }, 1000);
+                return;
             } else {
+                (async function(){
                 // register new api account
                 await AccountsDbPool_connection.query(`INSERT INTO accounts VALUES(
                     ${JSON.stringify(uuid())}, ${JSON.stringify(request.body.first_name)}, ${JSON.stringify(request.body.last_name)}, ${JSON.stringify(request.body.email)}, ${JSON.stringify(hashedPassword)})`);
@@ -37,6 +52,7 @@ async function registerAccount(request, response) {
                 global.setTimeout(() => {
                     response.json({"message": `Account ${request.body.first_name} ${request.body.last_name} has been registered!, now log into account to get token`})
                 }, 1000);
+                }());
             }
         } catch (error) {
             // console.log(error);

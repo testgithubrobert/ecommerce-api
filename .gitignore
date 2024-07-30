@@ -18,3 +18,5 @@ node_modules
 *.rest
 # ignore all log files and folders
 *logs
+# ignore sql connection files
+*.sql

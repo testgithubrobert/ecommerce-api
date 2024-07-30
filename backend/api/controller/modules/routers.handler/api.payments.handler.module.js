@@ -12,7 +12,7 @@ async function makeProductPayment(request, response) {
     var productsGroupThree = await ProductsDbPool_connection.query('SELECT * FROM machines_products');
 
     const products = [ ...productsGroupOne[0], ...productsGroupTwo[0], ...productsGroupThree[0] ];
-    const foundProduct = products.filter((product) => { return product.product_name === request.body.cart })
+    const foundProduct = products.filter((product) => { return product.product_name === request.body.cart });
 
     const users = await UsersDbPool_connection.query("SELECT * FROM users");
     let foundCustomer = users[0].find((customer) => { return customer.email === request.body.customer });
@@ -30,6 +30,10 @@ async function makeProductPayment(request, response) {
             global.setTimeout(() => {
                 response.status(400).json({ "message": `Provided amount does not equal to required amount for "${request.body.cart}"` });
             }, 1000);
+    }else if(foundProduct[0].amount < 1 || foundProduct[0].amount < 0) {
+        global.setTimeout(() => {
+            response.status(402).json({ "message": `Product "${request.body.cart}" not available on market!` })
+        }, 1000);
     } else {
         // record payments made by customers
         await PaymentsDbPool_connection.query(`INSERT INTO payments VALUES(
@@ -39,22 +43,36 @@ async function makeProductPayment(request, response) {
         await PaymentsDbPool_connection.query(`INSERT INTO payment_receipts VALUES(
             ${JSON.stringify(uuid())}, 'Eco Market', ${request.body.cart.length}, ${request.body.payment}, ${request.body.payment - foundProduct[0].cost}, 'cash', " ", ${paymentDate}, ${JSON.stringify(request.body.cart)}
         )`);
+        
+        if(foundProduct[0].category === 'machines & accessories') {
+            foundProduct[0].amount--;
+            await ProductsDbPool_connection.query(`UPDATE machines_products SET amount = ${foundProduct[0].amount--} WHERE product_name = ${JSON.stringify(request.body.cart)}`);
+        } else if(foundProduct[0].category === 'foods & vegetables') {
+            foundProduct[0].amount--;
+            await ProductsDbPool_connection.query(`UPDATE food_products SET amount = ${foundProduct[0].amount--} WHERE product_name = ${JSON.stringify(request.body.cart)}`)
+        } else {
+            foundProduct[0].amount--;
+            await ProductsDbPool_connection.query(`UPDATE cloths_products SET amount = ${foundProduct[0].amount--} WHERE product_name = ${JSON.stringify(request.body.cart)}`)
+        } 
 
-    global.setTimeout(() => response.json({ "uuid": uuid(),
-            "shop": "Eco Market",
-            "from": "Eco Market",
-            "to": request.body.customer,
-            "item/s": `${request.body.cart}`,
-            "total_payment": `$${request.body.payment}`,
-            "charge": `$${foundProduct[0].cost}`,
-            "change": `$${request.body.payment - foundProduct[0].cost}`,
-            "method": "cash",
-            "paid": true,
-            "credit": "",
-            "date": paymentDate,
-            "message": "Thank you for visiting Eco Market"
+    global.setTimeout(() => response.json({ 
+            uuid: uuid(),
+            shop: "Eco Market",
+            from: "Eco Market",
+            to: request.body.customer,
+            item: `${foundProduct[0].product_name}`,
+            category: `$${foundProduct[0].category}`,
+            total_payment: `$${request.body.payment}`,
+            charge: `$${foundProduct[0].cost}`,
+            change: `$${request.body.payment - foundProduct[0].cost}`,
+            method: "cash",
+            paid: true,
+            credit: "",
+            date: paymentDate,
+            message: "Thank you for visiting Eco Market"
          }), 
         1000);
+        return;
     }
 }
 
